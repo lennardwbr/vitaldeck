@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VitalDeck</title>
-<meta name="description" content="VitalDeck holt die Daten deiner Garmin-Uhr auf deinen eigenen Server, macht sie verständlich und gibt dir einen KI-Coach, der mitarbeitet.">
+<meta name="description" content="VitalDeck: Coach, Trainingsplan, Strecken und Auswertungen für deine Garmin-Daten, als fertige Anwendung auf deinem eigenen Server. Open Source, Kern kostenlos.">
 <!-- Fonts are self-hosted (no requests to Google, see datenschutz.html) -->
 <link href="fonts.css" rel="stylesheet">
 <link rel="icon" href="img/logo.svg" type="image/svg+xml">
@@ -128,9 +128,66 @@ h3{font-family:var(--display);font-weight:680;font-size:1.4rem;line-height:1.15;
 .note{max-width:40em;color:var(--muted);margin:22px 0 0;font-size:.98rem}
 @media (max-width:720px){.plans{grid-template-columns:1fr}.plan + .plan{border-left:0;border-top:1.5px solid var(--ink)}}
 
+/* hero facts */
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:6px 18px;margin:18px 0 0;padding:0;font-size:.95rem;color:var(--muted)}
+.facts li{display:flex;align-items:center;gap:7px}
+.facts li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+/* personal note */
+.personal{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr);gap:20px;max-width:880px}
+.personal p{margin:0;max-width:32em;font-size:1.28rem;line-height:1.5}
+.personal .sig{margin-top:14px;font-size:1rem;color:var(--muted)}
+@media (max-width:600px){.personal{grid-template-columns:1fr}.personal p{font-size:1.15rem}}
+
+/* comparison */
+.compare-scroll{overflow-x:auto;margin:0 -24px;padding:0 24px}
+.compare{border-collapse:collapse;width:100%;min-width:680px;font-size:.98rem}
+.compare th,.compare td{text-align:left;vertical-align:top;padding:14px 16px;border-top:1.5px solid var(--line)}
+.compare thead td{border-top:0}
+.compare thead th{border-top:0;font-family:var(--display);font-weight:680;font-size:1.05rem;line-height:1.2;vertical-align:bottom}
+.compare tbody th{font-weight:600;width:30%}
+.compare .vd{background:var(--paper-2)}
+.compare thead .vd{border-radius:14px 14px 0 0;color:var(--blue-ink)}
+.compare tbody tr:last-child .vd{border-radius:0 0 14px 14px}
+.compare td span{display:block;color:var(--muted);font-size:.9rem;line-height:1.35;margin-top:2px}
+.compare b{font-weight:600}
+.compare .y b{color:var(--green)}
+.compare .n b{color:var(--muted)}
+.compare .p b{color:var(--ink)}
+@media (max-width:600px){.compare-scroll{margin:0 -16px;padding:0 16px}}
+
+/* coach steps (a real sequence) */
+.steps{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin:0;padding:0}
+.steps li{counter-increment:s;border-top:2.5px solid var(--ink);padding-top:14px}
+.steps li::before{content:counter(s);display:block;font-family:var(--display);font-weight:740;font-size:2.4rem;line-height:1;color:var(--blue);margin-bottom:10px;font-variation-settings:"wdth" 86}
+.steps h3{font-size:1.2rem}
+.steps p{margin:0;color:var(--ink)}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* needs + data */
+.needs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;max-width:980px}
+.needs ul{margin:0;padding-left:1.2em}
+.needs li+li{margin-top:.5em}
+.needs p{margin:0 0 .7em}
+@media (max-width:760px){.needs{grid-template-columns:1fr;gap:32px}}
+
+/* faq */
+.faq{max-width:880px;border-bottom:1.5px solid var(--line)}
+.faq details{border-top:1.5px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font-family:var(--display);font-weight:680;font-size:1.18rem;line-height:1.25}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:1.5rem;line-height:1;color:var(--blue);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 20px;max-width:40em}
+@media (prefers-reduced-motion:reduce){.faq summary::after{transition:none}}
+
 /* honest */
 .honest{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr);gap:20px;max-width:880px}
 .honest p{margin:0;max-width:38em}
+.honest-body p+ul,.honest-body ul+p{margin-top:.7em}
+.honest-body ul{margin:0;padding-left:1.2em;max-width:36em}
+.honest-body li+li{margin-top:.35em}
 @media (max-width:600px){.honest{grid-template-columns:1fr}}
 
 /* waitlist */
@@ -195,11 +252,17 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
     <div class="hero-text">
       <h1 data-t="h1">Coach, Trainingsplan, Strecken und Auswertungen an einem Ort.</h1>
       <div>
-        <p class="lede" data-t="lede">VitalDeck holt die Daten deiner Garmin-Uhr und macht mehr daraus als Statistiken. Ein KI-Coach ordnet Schlaf und Erholung ein, plant dein Training Woche für Woche und schickt Einheiten direkt auf die Uhr. Dazu Streckenplanung, Zusammenhänge und Auswertungen bis ins Detail.</p>
+        <p class="lede" data-t="lede">VitalDeck holt die Daten deiner Garmin-Uhr auf deinen eigenen Server und macht mehr daraus als Statistiken. Ein KI-Coach ordnet Schlaf und Erholung ein, plant dein Training Woche für Woche und schickt Einheiten direkt auf die Uhr. Dazu Streckenplanung und Auswertungen bis ins Detail, als fertige Anwendung im Browser, auf Handy, Tablet und Rechner.</p>
         <div class="cta-row">
           <a class="btn" href="#warteliste" data-t="cta">Auf die Warteliste</a>
           <small data-t="cta_note">Noch nicht veröffentlicht. Trag dich ein, dann bekommst du Bescheid, sobald es losgeht.</small>
         </div>
+        <ul class="facts">
+          <li data-t="fact1">Open Source</li>
+          <li data-t="fact2">Docker auf Pi, NAS oder Server</li>
+          <li data-t="fact3">Kern kostenlos</li>
+          <li data-t="fact4">Kein Konto bei mir</li>
+        </ul>
       </div>
     </div>
     <div class="stage">
@@ -213,34 +276,72 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
   </div>
 </div>
 
-<section aria-labelledby="why">
-  <div class="wrap">
-    <h2 id="why" data-t="why_h">Drei Gründe für VitalDeck</h2>
-    <div class="reasons">
-      <div>
-        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M34 19a13 13 0 0 1-19 11.5L6 33l3-8A13 13 0 1 1 34 19z"/><path d="M14 19.5l4 4 8-8" stroke-linecap="round"/></svg>
-        <h3 data-t="r3_h">Ein Coach, der mitarbeitet.</h3>
-        <p data-t="r3">Er kennt deine Werte, erstellt Trainingspläne, schlägt Alternativen vor, wenn der Tag nicht passt, und sendet Einheiten an deine Uhr. Du bestätigst mit einem Tipp.</p>
-      </div>
-      <div>
-        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 28c5 0 6-14 11-14s5 10 10 10 6-16 11-16"/><circle cx="15" cy="14" r="2.2" fill="currentColor"/><circle cx="25" cy="24" r="2.2" fill="currentColor"/></svg>
-        <h3 data-t="r2_h">Versteht statt nur zeigt.</h3>
-        <p data-t="r2">Tagesbereitschaft, Schlafanalyse, Frühwarnung bei Erkältung, Zusammenhänge wie „Schlaf heute, HRV morgen“ und Auswertungen jeder Einheit, alles direkt berechnet.</p>
-      </div>
-      <div>
-        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 20 6l15 13v15H5z"/><rect x="14" y="21" width="12" height="9" rx="1.5"/><path d="M17 25h6"/></svg>
-        <h3 data-t="r1_h">Deine Daten, dein Server.</h3>
-        <p data-t="r1">Läuft per Docker auf einem Raspberry Pi, NAS oder Heimserver. Kein Konto bei uns, keine Cloud, kein Abo für den Kern.</p>
-      </div>
+<section aria-labelledby="story">
+  <div class="wrap"><div class="personal">
+    <h2 id="story" style="font-size:clamp(1.6rem,3vw,2.1rem)" data-t="story_h">Warum es VitalDeck gibt</h2>
+    <div>
+      <p data-t="story">Sport gehört für mich zu jedem Tag. Mich reizt, Woche für Woche ein Stück besser zu werden, und ich will verstehen, was dabei passiert: Warum fühlt sich eine Einheit leicht an und die nächste schwer? Was macht eine kurze Nacht mit dem Training am nächsten Tag? Aus dieser Neugier ist VitalDeck entstanden. Seit drei Monaten begleitet es mich jeden Tag, und jetzt mache ich es so fertig, dass du es genauso nutzen kannst.</p>
+      <p class="sig" data-t="sig">Lennard, Entwickler von VitalDeck</p>
     </div>
+  </div></div>
+</section>
+
+<section aria-labelledby="diff">
+  <div class="wrap">
+    <h2 id="diff" data-t="diff_h">Was VitalDeck anders macht</h2>
+    <p class="intro" data-t="diff_intro">Es gibt gute Werkzeuge für Garmin-Daten. Keins davon verbindet eine fertige Anwendung, einen Coach, der wirklich plant, und Daten auf deinem eigenen Server.</p>
+    <div class="compare-scroll" tabindex="0" role="region" aria-label="Vergleich" data-t-aria="diff_aria">
+      <table class="compare">
+        <thead><tr>
+          <td></td>
+          <th scope="col" class="vd">VitalDeck</th>
+          <th scope="col" data-t="col1">Garmin-App</th>
+          <th scope="col" data-t="col2">Grafana-Setups zum Selbsthosten</th>
+          <th scope="col" data-t="col3">KI-Coach als Cloud-Dienst</th>
+        </tr></thead>
+        <tbody>
+          <tr><th scope="row" data-t="row1">Fertig gestaltete Oberfläche fürs Handy</th>
+            <td class="y vd" data-t-html="c14"><b>Ja</b><span>als Anwendung im Browser, auch offline</span></td>
+            <td class="y" data-t-html="c11"><b>Ja</b></td>
+            <td class="n" data-t-html="c12"><b>Nein</b><span>Dashboards baust du selbst</span></td>
+            <td class="y" data-t-html="c13"><b>Ja</b></td></tr>
+          <tr><th scope="row" data-t="row2">Ordnet Werte ein und zeigt Zusammenhänge</th>
+            <td class="y vd" data-t-html="c24"><b>Ja</b><span>zwei beliebige Werte, auch zeitversetzt</span></td>
+            <td class="p" data-t-html="c21"><b>Teilweise</b><span>einzelne Werte</span></td>
+            <td class="n" data-t-html="c22"><b>Nein</b><span>nur Rohdaten</span></td>
+            <td class="y" data-t-html="c23"><b>Ja</b></td></tr>
+          <tr><th scope="row" data-t="row3">Coach plant und schickt Einheiten auf die Uhr</th>
+            <td class="y vd" data-t-html="c34"><b>Ja</b><span>du bestätigst jede Änderung</span></td>
+            <td class="p" data-t-html="c31"><b>Teilweise</b><span>Garmin Coach, aber ohne Rückfragen und Begründung</span></td>
+            <td class="n" data-t-html="c32"><b>Nein</b></td>
+            <td class="p" data-t-html="c33"><b>Meist nur Antworten</b></td></tr>
+          <tr><th scope="row" data-t="row4">Strecken planen mit Untergrund, Höhe und Wetter</th>
+            <td class="y vd" data-t-html="c44"><b>Ja</b></td>
+            <td class="p" data-t-html="c41"><b>Teilweise</b></td>
+            <td class="n" data-t-html="c42"><b>Nein</b></td>
+            <td class="n" data-t-html="c43"><b>Nein</b></td></tr>
+          <tr><th scope="row" data-t="row5">Daten auf deinem eigenen Server</th>
+            <td class="y vd" data-t-html="c54"><b>Ja</b></td>
+            <td class="n" data-t-html="c51"><b>Nein</b></td>
+            <td class="y" data-t-html="c52"><b>Ja</b></td>
+            <td class="n" data-t-html="c53"><b>Nein</b></td></tr>
+          <tr><th scope="row" data-t="row6">Ohne Abo</th>
+            <td class="y vd" data-t-html="c64"><b>Ja</b><span>Pro als Einmalkauf</span></td>
+            <td class="p" data-t-html="c61"><b>Teilweise</b><span>Connect+ ist ein Abo</span></td>
+            <td class="y" data-t-html="c62"><b>Ja</b></td>
+            <td class="n" data-t-html="c63"><b>Nein</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" data-t="diff_note">Stand November 2026, nach meiner eigenen Recherche. Wenn etwas nicht stimmt, schreib es mir.</p>
   </div>
 </section>
 
 <section aria-labelledby="look">
   <div class="wrap">
     <h2 id="look" data-t="look_h">So sieht es aus</h2>
-    <p class="intro" data-t="look_intro">Echte Screenshots aus der App, gefüllt mit Beispieldaten. Die Karte ist unkenntlich gemacht.</p>
-    <div class="gallery" tabindex="0" aria-label="Ansichten der App" data-t-aria="gallery_aria">
+    <p class="intro" data-t="look_intro">Echte Screenshots aus der Anwendung, gefüllt mit Beispieldaten. Die Karte ist unkenntlich gemacht.</p>
+    <div class="gallery" tabindex="0" aria-label="Ansichten der Anwendung" data-t-aria="gallery_aria">
       <figure>
         <div class="device"><img src="img/schlaf.webp" width="900" height="1957" loading="lazy" alt="Schlafansicht mit Puls-Tiefpunkt, Schlafphasen und Vergleich zu den letzten vier Wochen" data-t-alt="alt_sleep"></div>
         <figcaption><b data-t="c_sleep_h">Schlaf, Nacht für Nacht</b><span data-t="c_sleep">Phasen, Puls und HRV in der Nacht, im Vergleich zu deinen letzten vier Wochen.</span></figcaption>
@@ -261,17 +362,51 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
   </div>
 </section>
 
+<section aria-labelledby="coach">
+  <div class="wrap">
+    <h2 id="coach" data-t="coach_h">So arbeitet der Coach</h2>
+    <p class="intro" data-t="coach_intro">Er antwortet nicht nur, er plant mit. Entschieden wird trotzdem immer von dir.</p>
+    <ol class="steps">
+      <li><h3 data-t="s1_h">Kennt deine Werte</h3><p data-t="s1">Schlaf, HRV, Belastung, deinen Kalender und das, was du ihm über dich erzählst.</p></li>
+      <li><h3 data-t="s2_h">Schlägt vor und begründet</h3><p data-t="s2">Zum Beispiel einen Ruhetag statt Intervallen, mit den Zahlen, die dafür sprechen.</p></li>
+      <li><h3 data-t="s3_h">Du entscheidest</h3><p data-t="s3">Geändert wird nichts, bevor du tippst. Du kannst auch nachfragen oder ablehnen.</p></li>
+      <li><h3 data-t="s4_h">Auf die Uhr</h3><p data-t="s4">Die Einheit oder Strecke landet direkt auf deiner Garmin-Uhr.</p></li>
+    </ol>
+    <p class="note" data-t="coach_note">Der Coach ist Teil von Pro und nutzt Claude von Anthropic mit deinem eigenen API-Schlüssel. Er ersetzt keinen ärztlichen Rat.</p>
+  </div>
+</section>
+
 <section aria-labelledby="inside">
   <div class="wrap">
     <h2 id="inside" data-t="inside_h">Was drin ist</h2>
     <dl class="features">
       <dt data-t="f1_h">Heute</dt><dd data-t="f1">Morgen- und Abend-Briefing, Bereitschaft, frei anordenbare Widgets</dd>
       <dt data-t="f2_h">Schlaf und Erholung</dt><dd data-t="f2">Hypnogramm, HRV, Ruhepuls, Body Battery, Schlafschuld, Zubettgeh-Empfehlung</dd>
-      <dt data-t="f3_h">Training</dt><dd data-t="f3">Aktivitäten mit Karte und Verläufen, Belastung, Fitness und Form, Kalender, Rekorde, Kraft- und Kettlebell-Auswertung</dd>
+      <dt data-t="f3_h">Training</dt><dd data-t="f3">Aktivitäten mit Karte und Verläufen, Belastung, Fitness und Form, Kalender, Rekorde, Kraft-Auswertung</dd>
       <dt data-t="f6_h">Strecken planen</dt><dd data-t="f6">Runden oder von A nach B für Laufen, Trailrunning, Wandern, Rennrad, Gravel und Mountainbike. Länge, Untergrund und Höhenmeter frei wählbar, Wind und Regen fließen mit ein. Dazu Höhenprofil, Import per GPX oder Komoot-Link und direkt als Strecke auf die Garmin-Uhr</dd>
       <dt data-t="f4_h">Analyse</dt><dd data-t="f4">Trends, Vergleiche, Ziele mit Prognose, Zusammenhänge zwischen beliebigen Werten</dd>
-      <dt data-t="f5_h">Überall</dt><dd data-t="f5">App fürs Handy (PWA), Hell und Dunkel, Push-Mitteilungen, funktioniert auch offline</dd>
+      <dt data-t="f5_h">Überall</dt><dd data-t="f5">Läuft im Browser, auf dem Handy zum Startbildschirm hinzufügbar, Hell und Dunkel, Push-Mitteilungen, funktioniert auch offline</dd>
     </dl>
+  </div>
+</section>
+
+<section aria-labelledby="needs_h">
+  <div class="wrap">
+    <h2 id="needs_h" data-t="needs_h">Was du brauchst</h2>
+    <div class="needs">
+      <div>
+        <ul>
+          <li data-t="n1">Eine Garmin-Uhr und ein Konto bei Garmin Connect</li>
+          <li data-t="n2">Ein Gerät, das dauerhaft läuft und Docker kann, zum Beispiel ein Raspberry Pi, ein NAS, ein Heimserver oder ein PC</li>
+          <li data-t="n3">Für Pro einen eigenen API-Schlüssel von Anthropic</li>
+        </ul>
+      </div>
+      <div>
+        <h3 data-t="data_h">Wo deine Daten liegen</h3>
+        <p data-t="data1">In einer Datenbank auf deinem eigenen Gerät. Es gibt kein Konto bei mir und keinen Server von mir dazwischen.</p>
+        <p data-t="data2">Nach außen geht der Abgleich mit Garmin Connect. Mit Pro gehen außerdem die Werte, die der Coach für eine Antwort braucht, mit deinem Schlüssel an Anthropic.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -287,7 +422,7 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
           <li data-t="p1">Garmin-Abgleich und eigene Datenbank</li>
           <li data-t="p2">Dashboard, alle Auswertungen, Kalender, Karten, Streckenplanung</li>
           <li data-t="p3">Frühwarnung, Ziele, Zubettgeh-Empfehlung</li>
-          <li data-t="p4">PWA, Push, offline</li>
+          <li data-t="p4">Im Browser und auf dem Handy, Push, offline</li>
         </ul>
       </div>
       <div class="plan">
@@ -306,6 +441,29 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
   </div>
 </section>
 
+<section aria-labelledby="honest">
+  <div class="wrap"><div class="honest">
+    <h2 id="honest" style="font-size:clamp(1.6rem,3vw,2.1rem)" data-t="honest_h">Garmin-Anbindung</h2>
+    <div class="honest-body" data-t="honest"><p>VitalDeck nutzt heute eine inoffizielle Schnittstelle zu Garmin Connect, wie die meisten Open-Source-Projekte in diesem Bereich. Sie läuft seit Jahren zuverlässig, kann aber kurzzeitig ausfallen, wenn Garmin etwas ändert. Deshalb ist geplant:</p><ul><li>eine Bewerbung für das offizielle Garmin Connect Developer Program, um Workouts und Strecken über die offizielle Schnittstelle auf die Uhr zu bringen</li><li>ein Import von FIT- und GPX-Dateien, der ganz ohne Schnittstelle auskommt</li></ul><p>Die inoffizielle Anbindung bleibt danach nur noch als Option. Ob und wann die Bewerbung angenommen wird, entscheidet Garmin. VitalDeck ist nicht mit Garmin verbunden und ersetzt keinen ärztlichen Rat.</p></div>
+  </div></div>
+</section>
+
+<section aria-labelledby="faq_h">
+  <div class="wrap">
+    <h2 id="faq_h" data-t="faq_h">Häufige Fragen</h2>
+    <div class="faq">
+      <details><summary data-t="q1">Welche Uhren funktionieren?</summary><p data-t="a1">Alle Garmin-Uhren, deren Daten in Garmin Connect landen. Welche Werte es gibt, etwa HRV oder Body Battery, hängt vom Modell ab. Weitere Marken sind angedacht, aber noch nicht zugesagt.</p></details>
+      <details><summary data-t="q2">Brauche ich Pro?</summary><p data-t="a2">Nein. Die kostenlose Version enthält alle Auswertungen, den Kalender und die Streckenplanung. Pro bringt den KI-Coach dazu.</p></details>
+      <details><summary data-t="q3">Was kostet die KI im Monat?</summary><p data-t="a3">Du zahlst direkt bei Anthropic nach Nutzung, ohne Umweg über mich. Bei täglicher Nutzung sind das typischerweise wenige Euro im Monat.</p></details>
+      <details><summary data-t="q4">Wie aufwendig ist die Installation?</summary><p data-t="a4">Ziel ist ein Docker-Compose-Befehl und eine kurze Anleitung. Genau daran arbeite ich gerade.</p></details>
+      <details><summary data-t="q5">Ist VitalDeck Open Source?</summary><p data-t="a5">Ja. Der Kern erscheint unter der AGPL-3.0 auf GitHub. Pro ist ein kostenpflichtiges Zusatzmodul.</p></details>
+      <details><summary data-t="q6">Können mehrere Personen es nutzen?</summary><p data-t="a6">Eine Installation ist für eine Person gedacht. Jede weitere Person bekommt ihre eigene.</p></details>
+      <details><summary data-t="q7">Gibt es VitalDeck auf Englisch?</summary><p data-t="a7">Die Anwendung ist heute auf Deutsch. Die englische Version kommt vor der Veröffentlichung.</p></details>
+      <details><summary data-t="q8">Wann geht es los?</summary><p data-t="a8">Ein festes Datum gibt es noch nicht. Ich arbeite gerade daran, die Installation einfach zu machen. Wer auf der Warteliste steht, erfährt es zuerst.</p></details>
+    </div>
+  </div>
+</section>
+
 <section aria-labelledby="grow">
   <div class="wrap"><div class="honest">
     <h2 id="grow" style="font-size:clamp(1.6rem,3vw,2.1rem)" data-t="grow_h">Noch lange nicht fertig</h2>
@@ -313,18 +471,11 @@ footer nav{display:flex;gap:20px;flex-wrap:wrap}
   </div></div>
 </section>
 
-<section aria-labelledby="honest">
-  <div class="wrap"><div class="honest">
-    <h2 id="honest" style="font-size:clamp(1.6rem,3vw,2.1rem)" data-t="honest_h">Ehrlich gesagt</h2>
-    <p data-t="honest">VitalDeck nutzt eine inoffizielle Schnittstelle zu Garmin Connect, wie die meisten Open-Source-Projekte in diesem Bereich. Sie funktioniert seit Jahren zuverlässig, kann aber kurzzeitig ausfallen, wenn Garmin etwas ändert. VitalDeck ist kein Produkt von Garmin und ersetzt keinen ärztlichen Rat.</p>
-  </div></div>
-</section>
-
 <section class="wait" id="warteliste" aria-labelledby="wait_h">
   <div class="wrap wait-grid">
     <div>
-      <h2 id="wait_h" data-t="wait_h">Interessiert?</h2>
-      <p class="intro" data-t="wait_intro">Trag dich ein. Ich melde mich nur, wenn es Neuigkeiten gibt.</p>
+      <h2 id="wait_h" data-t="wait_h">Auf die Warteliste</h2>
+      <p class="intro" data-t="wait_intro">Trag dich ein, dann erfährst du zuerst, wenn VitalDeck startet. Sonst schreibe ich nur, wenn es wirklich Neuigkeiten gibt. Austragen geht jederzeit mit einer kurzen Mail an mich.</p>
     </div>
     <!-- Formspree: Form-ID in WAITLIST_ENDPOINT unten eintragen. Bis dahin sendet das Formular nichts. -->
     <form class="list" novalidate>
@@ -386,14 +537,39 @@ const T = {
  en:{
   skip:"Skip to content", nav_join:"Waitlist",
   h1:"Coach, training plan, routes and analysis in one place.",
-  lede:"VitalDeck takes the data from your Garmin watch and turns it into more than statistics. An AI coach makes sense of your sleep and recovery, plans your training week by week and sends workouts straight to your watch. Plus route planning, correlations and analysis down to the detail.",
+  lede:"VitalDeck brings the data from your Garmin watch to your own server and turns it into more than statistics. An AI coach makes sense of your sleep and recovery, plans your training week by week and sends workouts straight to your watch. Plus route planning and analysis down to the detail, as a finished application in your browser, on phone, tablet and desktop.",
+  fact1:"Open source", fact2:"Docker on a Pi, NAS or server", fact3:"Core is free", fact4:"No account with me",
+  story_h:"Why VitalDeck exists", story:"Sport is part of every day for me. I love getting a little better week by week, and I want to understand what is going on: why does one session feel easy and the next one hard? What does a short night do to the next day's training? VitalDeck grew out of that curiosity. It has been with me every day for three months, and now I am finishing it so you can use it the same way.", sig:"Lennard, developer of VitalDeck",
+  diff_h:"What makes VitalDeck different", diff_intro:"There are good tools for Garmin data. None of them combines a finished application, a coach that actually plans, and data on your own server.", diff_aria:"Comparison",
+  col1:"Garmin app", col2:"Self-hosted Grafana setups", col3:"AI coach as a cloud service",
+  row1:"Polished interface for your phone", row2:"Explains your numbers and shows correlations", row3:"Coach plans and sends workouts to your watch", row4:"Route planning with surface, elevation and weather", row5:"Data on your own server", row6:"No subscription",
+  c11:"<b>Yes</b>", c12:"<b>No</b><span>you build the dashboards</span>", c13:"<b>Yes</b>", c14:"<b>Yes</b><span>as an application in your browser, also offline</span>",
+  c21:"<b>Partly</b><span>single metrics</span>", c22:"<b>No</b><span>raw data only</span>", c23:"<b>Yes</b>", c24:"<b>Yes</b><span>any two metrics, even with a time lag</span>",
+  c31:"<b>Partly</b><span>Garmin Coach, but no back-and-forth or reasoning</span>", c32:"<b>No</b>", c33:"<b>Mostly just answers</b>", c34:"<b>Yes</b><span>you confirm every change</span>",
+  c41:"<b>Partly</b>", c42:"<b>No</b>", c43:"<b>No</b>", c44:"<b>Yes</b>",
+  c51:"<b>No</b>", c52:"<b>Yes</b>", c53:"<b>No</b>", c54:"<b>Yes</b>",
+  c61:"<b>Partly</b><span>Connect+ is a subscription</span>", c62:"<b>Yes</b>", c63:"<b>No</b>", c64:"<b>Yes</b><span>Pro is a one-time purchase</span>",
+  diff_note:"As of November 2026, based on my own research. If something is wrong, let me know.",
+  coach_h:"How the coach works", coach_intro:"It does not just answer, it plans with you. You still make every decision.",
+  s1_h:"Knows your numbers", s1:"Sleep, HRV, training load, your calendar and whatever you tell it about yourself.",
+  s2_h:"Suggests and explains", s2:"For example a rest day instead of intervals, with the numbers behind it.",
+  s3_h:"You decide", s3:"Nothing changes until you tap. You can also ask back or say no.",
+  s4_h:"On your watch", s4:"The workout or route goes straight to your Garmin watch.",
+  coach_note:"The coach is part of Pro and uses Claude by Anthropic with your own API key. It is not medical advice.",
+  needs_h:"What you need", n1:"A Garmin watch and a Garmin Connect account", n2:"A device that runs all the time and can run Docker, for example a Raspberry Pi, a NAS, a home server or a PC", n3:"For Pro, your own API key from Anthropic",
+  data_h:"Where your data lives", data1:"In a database on your own device. There is no account with me and no server of mine in between.", data2:"What leaves your device is the sync with Garmin Connect. With Pro, the numbers the coach needs for an answer also go to Anthropic with your key.",
+  faq_h:"Questions",
+  q1:"Which watches work?", a1:"Any Garmin watch whose data ends up in Garmin Connect. Which metrics you get, such as HRV or Body Battery, depends on the model. Other brands are being considered but not promised.",
+  q2:"Do I need Pro?", a2:"No. The free version includes all analysis, the calendar and route planning. Pro adds the AI coach.",
+  q3:"What does the AI cost per month?", a3:"You pay Anthropic directly for what you use, not through me. With daily use that is typically a few euros per month.",
+  q4:"How hard is the installation?", a4:"The goal is one Docker Compose command and a short guide. That is exactly what I am working on now.",
+  q5:"Is VitalDeck open source?", a5:"Yes. The core will be released on GitHub under the AGPL-3.0. Pro is a paid add-on.",
+  q6:"Can several people use it?", a6:"One installation is meant for one person. Everyone else gets their own.",
+  q7:"Is VitalDeck available in English?", a7:"The application is in German today. The English version will be ready before the release.",
+  q8:"When does it launch?", a8:"There is no fixed date yet. I am working on making the installation simple. People on the waitlist hear first.",
   cta:"Join the waitlist", cta_note:"Not released yet. Sign up and you will hear from me when it launches.",
   local:"Runs on your server", cap_l:"Left: the training plan on an iPad. Right: the Today view on a phone.", cap_r:"Real screenshots with sample data.",
-  why_h:"Three reasons for VitalDeck",
-  r1_h:"Your data, your server.", r1:"Runs with Docker on a Raspberry Pi, NAS or home server. No account with us, no cloud, no subscription for the core.",
-  r2_h:"Understands, not just displays.", r2:"Daily readiness, sleep analysis, early illness warning, correlations like “sleep tonight, HRV tomorrow” and analysis of every session, all computed locally.",
-  r3_h:"A coach that does the work.", r3:"It knows your numbers, builds training plans, suggests alternatives when the day does not fit and sends workouts to your watch. You confirm with one tap.",
-  look_h:"What it looks like", look_intro:"Real screenshots from the app, filled with sample data. Screens translated for this page, the English version of the app is planned. The map is blurred.", gallery_aria:"App views",
+  look_h:"What it looks like", look_intro:"Real screenshots from the application, filled with sample data. Screens translated for this page, the English version of the application is planned. The map is blurred.", gallery_aria:"Application views",
   c_sleep_h:"Sleep, night by night", c_sleep:"Stages, heart rate and HRV overnight, compared with your last four weeks.",
   c_coach_h:"The coach in chat", c_coach:"It explains itself with your numbers and prepares changes. Nothing is applied until you tap.",
   c_act_h:"Every session in detail", c_act:"Map, charts, zones and personal records. The map is blurred here.",
@@ -402,18 +578,18 @@ const T = {
   inside_h:"What is inside",
   f1_h:"Today", f1:"Morning and evening briefing, readiness, customizable widgets",
   f2_h:"Sleep and recovery", f2:"Hypnogram, HRV, resting heart rate, Body Battery, sleep debt, bedtime suggestion",
-  f3_h:"Training", f3:"Activities with maps and charts, load, fitness and form, calendar, records, strength and kettlebell analysis",
+  f3_h:"Training", f3:"Activities with maps and charts, load, fitness and form, calendar, records, strength analysis",
   f6_h:"Route planning", f6:"Loops or A to B for running, trail running, hiking, road cycling, gravel and mountain biking. Pick distance, surface and elevation, wind and rain are taken into account. With elevation profile, GPX or Komoot import, and sent straight to your Garmin watch as a course",
   f4_h:"Analysis", f4:"Trends, comparisons, goals with forecasts, correlations between any two metrics",
-  f5_h:"Everywhere", f5:"Installable phone app (PWA), light and dark mode, push notifications, works offline",
+  f5_h:"Everywhere", f5:"Runs in your browser, can be added to your phone's home screen, light and dark mode, push notifications, works offline",
   plans_h:"Free and Pro", plans_intro:"This split is preliminary. Your answer on the waitlist helps decide it.",
   free_tag:"Free, open source", pro_tag:"One-time purchase",
-  p1:"Garmin sync and your own database", p2:"Dashboard, all analysis, calendar, maps, route planning", p3:"Early warning, goals, bedtime suggestion", p4:"PWA, push, offline",
+  p1:"Garmin sync and your own database", p2:"Dashboard, all analysis, calendar, maps, route planning", p3:"Early warning, goals, bedtime suggestion", p4:"In your browser and on your phone, push, offline",
   p0:"Everything in the free version", p5:"AI coach chat with memory", p6:"AI briefings and assessments", p7:"Training plans that adapt every week", p8:"Workouts and alternatives sent to your watch",
   api_note:"Pro uses your own Claude API key. You pay the provider directly, typically a few euros per month.",
   grow_h:"Far from finished", grow:"VitalDeck keeps growing, and you can help decide where it goes. Missing an analysis, a sport or a feature? Tell me. I read every suggestion, and what helps many people gets built in. The form below is a good start, later you can also suggest things directly on GitHub.",
-  honest_h:"To be honest", honest:"VitalDeck uses an unofficial interface to Garmin Connect, like most open-source projects in this space. It has worked reliably for years but can break briefly when Garmin changes something. VitalDeck is not affiliated with Garmin and is not medical advice.",
-  wait_h:"Interested?", wait_intro:"Join the waitlist. I will only write when there is news.",
+  honest_h:"Garmin connection", honest:"<p>Today VitalDeck uses an unofficial interface to Garmin Connect, like most open-source projects in this space. It has worked reliably for years but can break briefly when Garmin changes something. So the plan is:</p><ul><li>to apply for the official Garmin Connect Developer Program, so workouts and courses reach your watch through the official interface</li><li>to import FIT and GPX files, which works without any interface at all</li></ul><p>The unofficial connection will then only remain as an option. Whether and when the application is accepted is up to Garmin. VitalDeck is not affiliated with Garmin and is not medical advice.</p>",
+  wait_h:"Join the waitlist", wait_intro:"Sign up and you will hear first when VitalDeck launches. Otherwise I only write when there is real news. You can leave any time with a short email to me.",
   q_email:"Email", q_pay:"Would you pay for Pro?", a_yes:"Yes", a_maybe:"Maybe", a_no:"No, free is enough",
   q_price:"What one-time price feels fair?", a_more:"more", q_host:"Where would you run VitalDeck?", optional:"(optional)",
   a_server:"Home server", a_unsure:"Not sure yet", q_wish:"What matters most to you, or what is still missing?",
