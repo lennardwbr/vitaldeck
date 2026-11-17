@@ -393,7 +393,7 @@ const T = {
   r1_h:"Your data, your server.", r1:"Runs with Docker on a Raspberry Pi, NAS or home server. No account with us, no cloud, no subscription for the core.",
   r2_h:"Understands, not just displays.", r2:"Daily readiness, sleep analysis, early illness warning, correlations like “sleep tonight, HRV tomorrow” and analysis of every session, all computed locally.",
   r3_h:"A coach that does the work.", r3:"It knows your numbers, builds training plans, suggests alternatives when the day does not fit and sends workouts to your watch. You confirm with one tap.",
-  look_h:"What it looks like", look_intro:"Real screenshots from the app, filled with sample data. The app is in German for now, English is planned. The map is blurred.", gallery_aria:"App views",
+  look_h:"What it looks like", look_intro:"Real screenshots from the app, filled with sample data. Screens translated for this page, the English version of the app is planned. The map is blurred.", gallery_aria:"App views",
   c_sleep_h:"Sleep, night by night", c_sleep:"Stages, heart rate and HRV overnight, compared with your last four weeks.",
   c_coach_h:"The coach in chat", c_coach:"It explains itself with your numbers and prepares changes. Nothing is applied until you tap.",
   c_act_h:"Every session in detail", c_act:"Map, charts, zones and personal records. The map is blurred here.",
@@ -438,6 +438,7 @@ function setLang(l){
   document.querySelectorAll("[data-t-html]").forEach(el=>{ if(d[el.dataset.tHtml]!=null) el.innerHTML = d[el.dataset.tHtml]; });
   document.querySelectorAll("[data-t-aria]").forEach(el=>{ if(d[el.dataset.tAria]!=null) el.setAttribute("aria-label", d[el.dataset.tAria]); });
   document.querySelectorAll("[data-t-alt]").forEach(el=>{ if(d[el.dataset.tAlt]!=null) el.setAttribute("alt", d[el.dataset.tAlt]); });
+  document.querySelectorAll(".device img").forEach(img=>{ const f=img.getAttribute("src").split("/").pop(); img.setAttribute("src",(l==="en"?"img/en/":"img/")+f); });
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.lang===l)));
   try{ localStorage.setItem("vitaldeck-lang", l) }catch(e){}
 }
